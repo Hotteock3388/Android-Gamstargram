@@ -1,0 +1,2 @@
+rootProject.name='Gamstar'
+include ':app'
