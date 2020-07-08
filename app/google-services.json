@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "661826249227",
+    "firebase_url": "https://gamstar-d1100.firebaseio.com",
+    "project_id": "gamstar-d1100",
+    "storage_bucket": "gamstar-d1100.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:661826249227:android:9b8cb95efe69fda0191d0e",
+        "android_client_info": {
+          "package_name": "com.example.gamstar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "661826249227-10d72aaede7472ijri3v5o9b7r9fdbqv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gamstar",
+            "certificate_hash": "32ef4004cf36811619d73742123bb8d22923da42"
+          }
+        },
+        {
+          "client_id": "661826249227-tfen4ac0ia9d7tmah8nie228sjoafhhn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvdi1QuorJjiMOipxzMTTOHbDZQuWONFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "661826249227-tfen4ac0ia9d7tmah8nie228sjoafhhn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
