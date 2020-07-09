@@ -1,8 +1,10 @@
 package com.example.gamstar
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.AccessToken
@@ -25,7 +27,7 @@ class LoginActivity : AppCompatActivity() {
 
     var auth : FirebaseAuth? = null
 
-    var googleSignInClient : GoogleSignInClient? = null
+    var googleSignInClient: GoogleSignInClient? = null
 
     var callbackManager : CallbackManager? = null
 
@@ -53,18 +55,23 @@ class LoginActivity : AppCompatActivity() {
 
     fun moveMainPage(user:FirebaseUser?){
         if(user != null){
+            //progress_bar.visibility = View.VISIBLE
             Toast.makeText(this, getString(R.string.signin_complete), Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
     }
 
-    fun googleLogin(){
+    fun googleLogin() {
+        progress_bar.visibility = View.VISIBLE
         var signInIntent = googleSignInClient?.signInIntent
         startActivityForResult(signInIntent, GOOGLE_LOGIN_CODE)
     }
 
+
     fun facebookLogin() {
+        progress_bar.visibility = View.VISIBLE
+
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "email"))
         LoginManager.getInstance().registerCallback(callbackManager, object : FacebookCallback<LoginResult>{
             override fun onSuccess(result: LoginResult) {
@@ -72,9 +79,11 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onCancel() {
+                progress_bar.visibility = View.GONE
             }
 
             override fun onError(error: FacebookException?) {
+                progress_bar.visibility = View.GONE
             }
         })
     }
@@ -83,6 +92,7 @@ class LoginActivity : AppCompatActivity() {
         val credential = FacebookAuthProvider.getCredential(token.token)
         auth?.signInWithCredential(credential)
             ?.addOnCompleteListener { task ->
+                progress_bar.visibility = View.GONE
                 if(task.isSuccessful){
                     moveMainPage(auth?.currentUser)
                 }
@@ -134,23 +144,23 @@ class LoginActivity : AppCompatActivity() {
 
 
         //구글에서 Accepted Data 가져오기
-        if(requestCode == GOOGLE_LOGIN_CODE){
-            var result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+        if (requestCode == GOOGLE_LOGIN_CODE && resultCode == Activity.RESULT_OK) {
+            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
 
             if (result!!.isSuccess) {
-                var account = result.signInAccount
+                val account = result.signInAccount
                 firebaseAuthWithGoogle(account!!)
+            } else {
+                progress_bar.visibility = View.GONE
             }
         }
-
-
-
     }
 
     private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         auth?.signInWithCredential(credential)
             ?.addOnCompleteListener { task->
+                progress_bar.visibility = View.GONE
                 if(task.isSuccessful){
                     moveMainPage(auth?.currentUser)
                 }
