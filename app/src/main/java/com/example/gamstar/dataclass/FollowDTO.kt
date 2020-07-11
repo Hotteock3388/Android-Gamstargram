@@ -1,4 +1,4 @@
-package com.company.howl.howlstagram.model
+package com.example.gamstar.dataclass
 
 import java.util.HashMap
 

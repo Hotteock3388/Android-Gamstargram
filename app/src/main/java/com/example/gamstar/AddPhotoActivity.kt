@@ -79,9 +79,8 @@ class AddPhotoActivity : AppCompatActivity() {
         progress_bar.visibility = View.VISIBLE
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_.png"
-        var storageRef = storage?.reference?.child("images")?.child(imageFileName)
-        //var file : Uri = photoUri!!
 
+        var storageRef = storage?.reference?.child("images")?.child(imageFileName)
         var uploadTask = storageRef?.putFile(photoUri!!)
         uploadTask?.addOnFailureListener {
             progress_bar.visibility = View.GONE
@@ -91,7 +90,7 @@ class AddPhotoActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
 
-        }?.addOnSuccessListener {
+        }?.addOnSuccessListener { taskSnapshot  -> photoUri.toString()
             progress_bar.visibility = View.GONE
 
             Toast.makeText(
@@ -99,15 +98,18 @@ class AddPhotoActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            var uri = storageRef?.downloadUrl.toString()
+            //var uri = storageRef?.downloadUrl.toString()
             //디비에 바인딩 할 위치 생성 및 컬렉션(테이블)에 데이터 집합 생성
 
+            //var uri = storageRef!!.downloadUrl
+
+            var uri = uploadTask.result.toString()
 
             //시간 생성
             val contentDTO = ContentDTO()
 
             //이미지 주소
-            contentDTO.imageUrl = uri
+            contentDTO.imageUrl = uri.toString()
             //유저의 UID
             contentDTO.uid = auth?.currentUser?.uid
             //게시물의 설명

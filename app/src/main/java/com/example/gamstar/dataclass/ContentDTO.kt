@@ -1,7 +1,5 @@
 package com.example.gamstar.dataclass
 
-import java.util.HashMap
-
 class ContentDTO(var explain: String? = null,
                  var imageUrl: String? = null,
                  var uid: String? = null,

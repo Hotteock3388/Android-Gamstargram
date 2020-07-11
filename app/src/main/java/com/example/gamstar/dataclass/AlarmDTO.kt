@@ -1,4 +1,4 @@
-package com.company.howl.howlstagram.model
+package com.example.gamstar.dataclass
 
 data class AlarmDTO (
         var destinationUid: String? = null,

@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.company.howl.howlstagram.model.AlarmDTO
-import com.company.howl.howlstagram.model.FollowDTO
+import com.example.gamstar.dataclass.AlarmDTO
 import com.example.gamstar.dataclass.ContentDTO
+import com.example.gamstar.dataclass.FollowDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
