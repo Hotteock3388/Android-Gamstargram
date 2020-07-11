@@ -12,10 +12,10 @@
         android:enabled="true"
         android:icon="@drawable/gam_search"
         />
-    <item android:title="test"
-        android:id="@+id/action_test"
+    <item android:title="Photo"
+        android:id="@+id/action_Photo"
         android:enabled="true"
-        android:icon="@drawable/ic_arrow_back"
+        android:icon="@drawable/ic_add_a_photo"
         />
     <item android:title="Heart"
         android:id="@+id/action_Heart"

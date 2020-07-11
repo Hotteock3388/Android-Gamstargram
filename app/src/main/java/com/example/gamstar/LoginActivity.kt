@@ -170,7 +170,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-   //     moveMainPage(auth?.currentUser)
+        moveMainPage(auth?.currentUser)
     }
 
 }
