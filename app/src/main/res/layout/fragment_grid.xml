@@ -5,9 +5,15 @@
     android:layout_height="match_parent"
     tools:context=".GridFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/gridFragment_recycleView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/gridFragment_recycleView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"/>-->
 
+    <ImageView
+        android:id="@+id/gridImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/gamstagram_title"
+        />
 </FrameLayout>

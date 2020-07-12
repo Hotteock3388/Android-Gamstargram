@@ -1,6 +1,7 @@
 package com.example.gamstar
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,26 +13,37 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.gamstar.dataclass.ContentDTO
+import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_grid.*
 import kotlinx.android.synthetic.main.fragment_grid.view.*
 
 class GridFragment : Fragment() {
+
 
     var mainView: View? = null
     var imagesSnapshot  : ListenerRegistration? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mainView = inflater.inflate(R.layout.fragment_grid, container, false)
 
+
+        Glide.with(mainView)
+            .load("gs://gamstar-d1100.appspot.com/images/JPEG_20200712_153728_.png")
+            .apply(RequestOptions().centerCrop())
+            .into(mainView!!.gridImageView)
+
+
         return mainView
     }
 
     override fun onResume() {
         super.onResume()
-        mainView?.gridFragment_recycleView?.adapter = GridFragmentRecyclerViewAdatper()
-        mainView?.gridFragment_recycleView?.layoutManager = GridLayoutManager(activity, 3)
+//        mainView?.gridFragment_recycleView?.adapter = GridFragmentRecyclerViewAdatper()
+//        mainView?.gridFragment_recycleView?.layoutManager = GridLayoutManager(activity, 3)
     }
 
     override fun onStop() {
@@ -44,19 +56,17 @@ class GridFragment : Fragment() {
 
         var contentDTOs: ArrayList<ContentDTO>
 
-
         init {
             contentDTOs = ArrayList()
-            imagesSnapshot = FirebaseFirestore.getInstance().collection("images").orderBy("timestamp")?.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            imagesSnapshot = FirebaseFirestore
+                .getInstance().collection("images").orderBy("timestamp")?.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     contentDTOs.clear()
-                if (querySnapshot == null) return@addSnapshotListener
-                else {
+                    if (querySnapshot == null) return@addSnapshotListener
                     for (snapshot in querySnapshot!!.documents) {
                         contentDTOs.add(snapshot.toObject(ContentDTO::class.java)!!)
                     }
                     notifyDataSetChanged()
                 }
-            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -74,11 +84,10 @@ class GridFragment : Fragment() {
 
             var imageView = (holder as CustomViewHolder).imageView
 
-            Glide.with(holder.itemView.context).load(contentDTOs[position].imageUrl)
-//                .apply(RequestOptions().centerCrop())
+            Glide.with(holder.itemView.context)
+                .load(contentDTOs[position].imageUrl)
+                .apply(RequestOptions().centerCrop())
                 .into(imageView)
-
-            //Picasso.get().load(contentDTOs[position].imageUrl).error(R.drawable.gam_user).into(imageView)
 
             imageView.setOnClickListener {
                 val fragment = UserFragment()
@@ -100,4 +109,5 @@ class GridFragment : Fragment() {
 
         inner class CustomViewHolder(var imageView: ImageView) : RecyclerView.ViewHolder(imageView)
     }
+
 }

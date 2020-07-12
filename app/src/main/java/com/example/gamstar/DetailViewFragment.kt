@@ -20,17 +20,21 @@ import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_detail_view.view.*
 import kotlinx.android.synthetic.main.item_detail.view.*
+import okhttp3.OkHttpClient
 
 class DetailViewFragment : Fragment() {
 
     var user: FirebaseUser? = null
     var firestore: FirebaseFirestore? = null
     var imagesSnapshot: ListenerRegistration? = null
+    var okHttpClient: OkHttpClient? = null
+
     var mainView: View? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         user = FirebaseAuth.getInstance().currentUser
         firestore = FirebaseFirestore.getInstance()
+        okHttpClient = OkHttpClient()
 
         //리사이클러 뷰와 어뎁터랑 연결
         mainView = inflater.inflate(R.layout.fragment_detail_view, container, false)
@@ -107,9 +111,11 @@ class DetailViewFragment : Fragment() {
                     if (task.isSuccessful) {
 
                         val url = task.result?.get("image")
+
                         Glide.with(holder.itemView.context)
                             .load(url)
-                            .apply(RequestOptions().circleCrop()).into(viewHolder.detailViewItem_profileImage)
+                            .apply(RequestOptions().circleCrop())
+                            .into(viewHolder.detailViewItem_profileImage)
 
                     }
                 }

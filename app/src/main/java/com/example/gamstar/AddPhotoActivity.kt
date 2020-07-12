@@ -5,14 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.example.gamstar.dataclass.ContentDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_add_photo.*
 import java.io.File
 import java.text.SimpleDateFormat
@@ -77,20 +76,19 @@ class AddPhotoActivity : AppCompatActivity() {
 
     fun contentUpload() {
         progress_bar.visibility = View.VISIBLE
+
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_.png"
 
-        var storageRef = storage?.reference?.child("images")?.child(imageFileName)
-        var uploadTask = storageRef?.putFile(photoUri!!)
+        val storageRef = storage?.reference?.child("images")?.child(imageFileName)
+        val uploadTask = storageRef?.putFile(photoUri!!)
+
         uploadTask?.addOnFailureListener {
             progress_bar.visibility = View.GONE
 
-            Toast.makeText(
-                this, getString(R.string.upload_success),
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(this, getString(R.string.upload_success), Toast.LENGTH_SHORT).show()
+        }?.addOnSuccessListener { task ->
 
-        }?.addOnSuccessListener { taskSnapshot  -> photoUri.toString()
             progress_bar.visibility = View.GONE
 
             Toast.makeText(
@@ -103,8 +101,21 @@ class AddPhotoActivity : AppCompatActivity() {
 
             //var uri = storageRef!!.downloadUrl
 
-            var uri = uploadTask.result.toString()
+            //storageRef.child(imageFileName).
 
+            Log.d("PhotoUri", photoUri.toString())
+            Log.d("storageRef", storageRef.toString())
+            Log.d("uploadTask", uploadTask.snapshot.metadata?.reference?.downloadUrl.toString())
+
+            //var uri = uploadTask.result.toString()
+            //var uri = uploadTask.result
+            //var uri = storageRef!!.downloadUrl
+            //var uri = storageRef!!.downloadUrl.result
+
+            var uri = storage?.getReferenceFromUrl(storageRef.toString())
+            //uri = task.downloadUrl
+            Log.d("downloadUri", uri.toString())
+            Log.d("bb", storage?.getReferenceFromUrl(storageRef.toString()).toString())
             //시간 생성
             val contentDTO = ContentDTO()
 
@@ -124,7 +135,8 @@ class AddPhotoActivity : AppCompatActivity() {
 
             setResult(Activity.RESULT_OK)
             finish()
-        }
+        }?.addOnCompleteListener {
+            }
 
 //        var storageRef = storage?.reference?.child("images")?.child(imageFileName)
 

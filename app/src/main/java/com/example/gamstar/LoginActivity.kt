@@ -17,7 +17,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.*
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.*
 
@@ -52,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
         email_SigninButton.setOnClickListener { signinAndSignupEmail() }
     }
 
-    fun moveMainPage(user:FirebaseUser?){
+    fun moveMainPage(user: FirebaseUser?){
         if(user != null){
             //progress_bar.visibility = View.VISIBLE
             Toast.makeText(this, getString(R.string.signin_complete), Toast.LENGTH_SHORT).show()

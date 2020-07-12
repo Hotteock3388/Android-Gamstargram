@@ -1,5 +1,6 @@
 package com.example.gamstar
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -11,9 +12,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+
+    val PICK_PROFILE_FROM_ALBUM = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +32,25 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
 
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == PICK_PROFILE_FROM_ALBUM && resultCode == Activity.RESULT_OK) {
+            var imageUri = data?.data
+
+            val uid = FirebaseAuth.getInstance().currentUser!!.uid
+
+            FirebaseStorage.getInstance().reference.child(uid).putFile(imageUri!!)
+                .addOnCompleteListener { task ->
+                    val url = task.result?.metadata?.reference?.downloadUrl.toString()
+                    val map = HashMap<String, Any>()
+                    map["image"] = url
+                    FirebaseFirestore.getInstance().collection("profileImages").document(uid).set(map)
+                }
+        }
+    }
+
 
     fun setToolbarDefault() {
         toolbar_titleImage.visibility = View.VISIBLE

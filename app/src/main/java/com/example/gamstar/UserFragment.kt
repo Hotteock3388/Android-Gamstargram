@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.gamstar.dataclass.AlarmDTO
 import com.example.gamstar.dataclass.ContentDTO
 import com.example.gamstar.dataclass.FollowDTO
 import com.google.firebase.auth.FirebaseAuth
@@ -37,18 +36,15 @@ class UserFragment : Fragment() {
     var uid: String? = null
     var currentUserUid: String? = null
 
-
     var fragmentView: View? = null
     var followListenerRegistration: ListenerRegistration? = null
     var followingListenerRegistration: ListenerRegistration? = null
     var imageprofileListenerRegistration: ListenerRegistration? = null
     var recyclerListenerRegistration: ListenerRegistration? = null
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         fragmentView = inflater.inflate(R.layout.fragment_user, container, false)
-
         // Firebase
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
@@ -230,7 +226,6 @@ class UserFragment : Fragment() {
         val contentDTOs: ArrayList<ContentDTO>
 
         init {
-
             contentDTOs = ArrayList()
 
             // 나의 사진만 찾기
