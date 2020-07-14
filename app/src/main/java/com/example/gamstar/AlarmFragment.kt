@@ -18,6 +18,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_alarm.view.*
+import kotlinx.android.synthetic.main.item_alarm.view.*
 import kotlinx.android.synthetic.main.item_commentlayout.view.*
 
 class AlarmFragment : Fragment() {
@@ -71,14 +72,14 @@ class AlarmFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_commentlayout, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_alarm, parent, false)
             return CustomViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-            val profileImage = holder.itemView.commentviewitem_imageview_profile
-            val commentTextView = holder.itemView.commentviewitem_textview_comment
+            val profileImage = holder.itemView.alarmItem_profileImageView
+            val commentTextView = holder.itemView.alarmItem_commentTextView
 
             FirebaseFirestore.getInstance().collection("profileImages")
                 .document(alarmDTOList[position].uid!!).get().addOnCompleteListener {
@@ -124,7 +125,7 @@ class AlarmFragment : Fragment() {
                 }
 
                 1 -> {
-                    val str_1 = alarmDTOList[position].userId + getString(R.string.alarm_who) + alarmDTOList[position].message + getString(R.string.alarm_comment)
+                    val str_1 = alarmDTOList[position].userId + getString(R.string.alarm_who) +"\"" + alarmDTOList[position].message +"\""+ getString(R.string.alarm_comment)
                     commentTextView.text = str_1
                 }
 

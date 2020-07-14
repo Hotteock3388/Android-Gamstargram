@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:background="@drawable/rc"
+    android:background="@drawable/rc_gray"
     android:layout_marginVertical="10dp"
     android:orientation="vertical">
 
@@ -47,7 +47,7 @@
             android:id="@+id/detailViewItem_imageView_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/rc"
+            android:background="@drawable/rc_gray"
             android:scaleType="fitXY" />
     </LinearLayout>
 

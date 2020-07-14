@@ -12,10 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:layout_alignParentTop="true"
+        android:layout_marginVertical="10dp"
         >
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
             <ImageView
                 android:id="@+id/toolbar_titleImage"
@@ -57,7 +59,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/my_toolbar"
-        android:background="@color/colorDivision"
+        android:background="#000000"
+        android:layout_marginHorizontal="20dp"
         android:orientation="horizontal"/>
 
     <androidx.core.widget.ContentLoadingProgressBar
@@ -73,6 +76,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar_division"
         android:layout_above="@+id/bottom_navigation"
+
         />
     <LinearLayout
         android:id="@+id/nav_division"

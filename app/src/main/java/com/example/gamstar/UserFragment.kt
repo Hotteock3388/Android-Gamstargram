@@ -279,6 +279,7 @@ class UserFragment : Fragment() {
             val width = resources.displayMetrics.widthPixels / 3
 
             val imageView = ImageView(parent.context)
+
             imageView.layoutParams = LinearLayoutCompat.LayoutParams(width, width)
 
             return CustomViewHolder(imageView)

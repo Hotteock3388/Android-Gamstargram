@@ -5,8 +5,19 @@
     android:layout_height="match_parent"
     tools:context=".AlarmFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/alarmFragment_RecyclerView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:background="@drawable/rc_white"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/alarmFragment_RecyclerView"
+            android:layout_width="match_parent"
+            android:background="@drawable/rc_white"
+            android:padding="2dp"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
 </LinearLayout>
