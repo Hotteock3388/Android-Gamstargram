@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,14 +17,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.gamstar.dataclass.AlarmDTO
 import com.example.gamstar.dataclass.ContentDTO
 import com.example.gamstar.dataclass.FollowDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_user.*
 import kotlinx.android.synthetic.main.fragment_user.view.*
+import kotlinx.android.synthetic.main.item_detail.view.*
 
 class UserFragment : Fragment() {
     val PICK_PROFILE_FROM_ALBUM = 10
@@ -96,6 +100,7 @@ class UserFragment : Fragment() {
         }
         getFollowing()
         getFollower()
+        getProfileImage()
         fragmentView?.account_recyclerview?.layoutManager = GridLayoutManager(activity!!, 3)
         fragmentView?.account_recyclerview?.adapter = UserFragmentRecyclerViewAdapter()
 
@@ -108,19 +113,44 @@ class UserFragment : Fragment() {
     }
 
     fun getProfileImage() {
-        imageprofileListenerRegistration = firestore?.collection("profileImages")?.document(uid!!)
-            ?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+//        imageprofileListenerRegistration = firestore?.collection("profileImages")?.document(uid!!)
+//            ?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+//
+//                if (documentSnapshot?.data != null) {
+//                    val url = documentSnapshot?.data!!["image"]
+//                    Log.d("url", url.toString())
+//                    Glide.with(activity!!)
+//                        .load(url)
+//                        .apply(RequestOptions().circleCrop())
+//                        .into(fragmentView!!.account_iv_profile)
+//                }
+//            }
 
-                if (documentSnapshot?.data != null) {
-                    val url = documentSnapshot?.data!!["image"]
-                    Glide.with(activity!!)
-                        .load(url)
-                        .apply(RequestOptions().circleCrop()).into(fragmentView!!.account_iv_profile)
-                }
+        var profileref = FirebaseStorage.getInstance().reference.child(uid.toString())
+//            var imageView = (holder as GridFragment.GridFragmentRecyclerViewAdatper.CustomViewHolder).imageView
+        profileref.downloadUrl.addOnCompleteListener {
+                task ->
+            if(task.isSuccessful){
+                Glide.with(activity)
+                    .load(task.result)
+                    .apply(RequestOptions().circleCrop())
+                    .into(fragmentView!!.account_iv_profile)
+
             }
+        }
 
     }
 
+    fun followAlarm(destinationUid: String) {
+        val alarmDTO = AlarmDTO()
+        alarmDTO.destinationUid = destinationUid
+        alarmDTO.userId = auth?.currentUser!!.email
+        alarmDTO.uid = auth?.currentUser!!.uid
+        alarmDTO.kind = 2
+        alarmDTO.timestamp = System.currentTimeMillis()
+
+        FirebaseFirestore.getInstance().collection("alarms").document().set(alarmDTO)
+    }
 
     fun getFollowing() {
         followingListenerRegistration = firestore?.collection("users")?.document(uid!!)?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
@@ -183,6 +213,7 @@ class UserFragment : Fragment() {
 
                 followDTO?.followingCount = followDTO?.followingCount + 1
                 followDTO?.followings[uid!!] = true
+                followAlarm(uid!!)
             }
             transaction.set(tsDocFollowing, followDTO)
             return@runTransaction
@@ -255,10 +286,22 @@ class UserFragment : Fragment() {
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             var imageview = (holder as CustomViewHolder).imageView
-            Glide.with(holder.itemView.context)
-                .load(contentDTOs[position].imageUrl)
-                .apply(RequestOptions().centerCrop())
-                .into(imageview)
+//            Glide.with(holder.itemView.context)
+//                .load(contentDTOs[position].imageUrl)
+//                .apply(RequestOptions().centerCrop())
+//                .into(imageview)
+
+            var userref = FirebaseStorage.getInstance().reference.child("images").child(contentDTOs[position].imageUrl.toString());
+            userref.downloadUrl.addOnCompleteListener {
+                    task ->
+                Log.d("task", task.result.toString())
+                if(task.isSuccessful){
+                    Glide.with(holder.itemView.context)
+                        .load(task.result)
+                        .apply(RequestOptions().centerCrop())
+                        .into(imageview)
+                }
+            }
         }
 
         override fun getItemCount(): Int {

@@ -1,6 +1,6 @@
 package com.example.gamstar.dataclass
 
-data class AlarmDTO (
+data class      AlarmDTO (
         var destinationUid: String? = null,
         var userId: String? = null,
         var uid: String? = null,

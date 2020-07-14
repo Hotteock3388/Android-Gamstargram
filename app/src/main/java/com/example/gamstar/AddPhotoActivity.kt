@@ -12,7 +12,11 @@ import com.example.gamstar.dataclass.ContentDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_add_photo.*
+import kotlinx.android.synthetic.main.activity_add_photo.progress_bar
+import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.http.Url
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -83,6 +87,12 @@ class AddPhotoActivity : AppCompatActivity() {
         val storageRef = storage?.reference?.child("images")?.child(imageFileName)
         val uploadTask = storageRef?.putFile(photoUri!!)
 
+
+        val storage : FirebaseStorage = FirebaseStorage.getInstance("gs://gamstar-d1100")
+        val storageReference: StorageReference = storage!!.reference
+        val spaceRef : StorageReference = storageRef!!.child("images/$imageFileName");
+
+
         uploadTask?.addOnFailureListener {
             progress_bar.visibility = View.GONE
 
@@ -108,19 +118,32 @@ class AddPhotoActivity : AppCompatActivity() {
             Log.d("uploadTask", uploadTask.snapshot.metadata?.reference?.downloadUrl.toString())
 
             //var uri = uploadTask.result.toString()
-            //var uri = uploadTask.result
-            //var uri = storageRef!!.downloadUrl
-            //var uri = storageRef!!.downloadUrl.result
+        //    var a1 = uploadTask.result
+       //     var a2 = storageRef?.downloadUrl
+            //var a3 = storageRef?.downloadUrl.result
 
-            var uri = storage?.getReferenceFromUrl(storageRef.toString())
-            //uri = task.downloadUrl
-            Log.d("downloadUri", uri.toString())
-            Log.d("bb", storage?.getReferenceFromUrl(storageRef.toString()).toString())
+            //var a4 = storage?.getReferenceFromUrl(storageRef.toString())
+        //    var a5 = spaceRef
+            var uri = storageRef.toString()
+
+            Log.d("aaaaaaaaa", storageRef.downloadUrl.toString())
+            //var uri: Uri? = null
+
+
+         //   var a7 = storage.getReference().child("imageas").child(imageFileName).downloadUrl
+         //   var a8 = FirebaseStorage.getInstance().getReference().child("images").child(imageFileName).downloadUrl
+
+         //   var a9 = task.metadata?.reference?.downloadUrl
+            //Log.d("downloadUri", uri.toString())
+            //Log.d("bb", storage?.getReferenceFromUrl(storageRef.toString()).toString())
             //시간 생성
+
+
+//            var a10 = storage?.getReferenceFromUrl(storageRef.toString()).toString() "
             val contentDTO = ContentDTO()
 
             //이미지 주소
-            contentDTO.imageUrl = uri.toString()
+            contentDTO.imageUrl = imageFileName
             //유저의 UID
             contentDTO.uid = auth?.currentUser?.uid
             //게시물의 설명

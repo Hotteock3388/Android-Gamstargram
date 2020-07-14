@@ -2,6 +2,7 @@ package com.example.gamstar
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.gamstar.dataclass.AlarmDTO
 import com.example.gamstar.dataclass.ContentDTO
@@ -17,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_detail_view.view.*
 import kotlinx.android.synthetic.main.item_detail.view.*
@@ -83,7 +86,7 @@ class DetailViewFragment : Fragment() {
                 if (querySnapshot == null) return@addSnapshotListener
                 for (snapshot in querySnapshot!!.documents) {
                     var item = snapshot.toObject(ContentDTO::class.java)!!
-                    println(item.uid)
+
                     if (followers?.keys?.contains(item.uid)!!) {
                         contentDTOs.add(item)
                         contentUidList.add(snapshot.id)
@@ -105,20 +108,33 @@ class DetailViewFragment : Fragment() {
 
             val viewHolder = (holder as CustomViewHolder).itemView
 
-            // Profile Image 가져오기
-            firestore?.collection("profileImages")?.document(contentDTOs[position].uid!!)
-                ?.get()?.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
+             //Profile Image 가져오기
+//            firestore?.collection("profileImages")?.document(contentDTOs[position].uid!!)
+//                ?.get()?.addOnCompleteListener { task ->
+//                    if (task.isSuccessful) {
+//
+//                        val url = task.result?.get("image")
+//                        Log.d("url", url.toString())
+//                        Glide.with(holder.itemView.context)
+//                            .load(url)
+//                            .apply(RequestOptions().circleCrop())
+//                            .into(viewHolder.detailViewItem_profileImage)
+//                    }
+//                }
 
-                        val url = task.result?.get("image")
+            var profileref = FirebaseStorage.getInstance().reference.child(contentDTOs[position].uid.toString())
 
-                        Glide.with(holder.itemView.context)
-                            .load(url)
-                            .apply(RequestOptions().circleCrop())
-                            .into(viewHolder.detailViewItem_profileImage)
+            profileref.downloadUrl.addOnCompleteListener {
+                    task ->
+                if(task.isSuccessful){
+                    Glide.with(holder.itemView.context)
+                        .load(task.result)
+                        .apply(RequestOptions().circleCrop())
+                        .into(viewHolder.detailViewItem_profileImage)
 
-                    }
                 }
+            }
+
 
             //UserFragment로 이동
             viewHolder.detailViewItem_profileImage.setOnClickListener {
@@ -139,9 +155,24 @@ class DetailViewFragment : Fragment() {
             viewHolder.detailViewItem_profileTextView.text = contentDTOs[position].userId
 
             // 가운데 이미지
-            Glide.with(holder.itemView.context)
-                .load(contentDTOs[position].imageUrl)
-                .into(viewHolder.detailViewItem_imageView_content)
+//            Glide.with(holder.itemView.context)
+//                .load(contentDTOs[position].imageUrl)
+//                .into(viewHolder.detailViewItem_imageView_content)
+
+            var ref = FirebaseStorage.getInstance().reference.child("images").child(contentDTOs[position].imageUrl.toString());
+
+//            var imageView = (holder as GridFragment.GridFragmentRecyclerViewAdatper.CustomViewHolder).imageView
+
+            ref.downloadUrl.addOnCompleteListener {
+                    task ->
+                if(task.isSuccessful){
+                    Glide.with(holder.itemView.context)
+                        .load(task.result)
+                        .apply(RequestOptions().centerInside().transform(RoundedCorners(30)))
+                        .into(viewHolder.detailViewItem_imageView_content)
+
+                }
+            }
 
             // 설명 텍스트
             viewHolder.detailViewItem_explain_textView.text = contentDTOs[position].explain
@@ -172,9 +203,11 @@ class DetailViewFragment : Fragment() {
         fun favoriteAlarm(destinationUid: String) {
 
             val alarmDTO = AlarmDTO()
+
             alarmDTO.destinationUid = destinationUid
             alarmDTO.userId = user?.email
             alarmDTO.uid = user?.uid
+
             alarmDTO.kind = 0
             alarmDTO.timestamp = System.currentTimeMillis()
 

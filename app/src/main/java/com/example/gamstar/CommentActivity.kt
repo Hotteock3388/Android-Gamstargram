@@ -2,6 +2,7 @@ package com.example.gamstar
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_comment.*
 import kotlinx.android.synthetic.main.item_commentlayout.view.*
 
@@ -29,6 +31,7 @@ class CommentActivity : AppCompatActivity() {
         setContentView(R.layout.activity_comment)
 
         user = FirebaseAuth.getInstance().currentUser
+
         destinationUid = intent.getStringExtra("destinationUid")
         contentUid = intent.getStringExtra("contentUid")
 
@@ -86,15 +89,11 @@ class CommentActivity : AppCompatActivity() {
 
         init {
             comments = ArrayList()
-            commentSnapshot = FirebaseFirestore
-                .getInstance()
-                .collection("images")
-                .document(contentUid!!)
-                .collection("comments")
+            commentSnapshot = FirebaseFirestore.getInstance().collection("images").document(contentUid!!).collection("comments")
                 .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                     comments.clear()
                     if (querySnapshot == null) return@addSnapshotListener
-                    for (snapshot in querySnapshot?.documents!!) {
+                    for (snapshot in querySnapshot.documents) {
                         comments.add(snapshot.toObject(ContentDTO.Comment::class.java)!!)
                     }
                     notifyDataSetChanged()
@@ -114,18 +113,33 @@ class CommentActivity : AppCompatActivity() {
             var view = holder.itemView
 
             // Profile Image
-            FirebaseFirestore.getInstance()
-                .collection("profileImages")
-                .document(comments[position].uid!!)
-                .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
-                    if (documentSnapshot?.data != null) {
-
-                        val url = documentSnapshot?.data!!["image"]
-                        Glide.with(holder.itemView.context)
-                            .load(url)
-                            .apply(RequestOptions().circleCrop()).into(view.commentviewitem_imageview_profile)
-                    }
+//            FirebaseFirestore.getInstance()
+//                .collection("profileImages")
+//                .document(comments[position].uid!!)
+//                .addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+//                    if (documentSnapshot?.data != null) {
+//
+//                        val url = documentSnapshot?.data!!["image"]
+//                        Glide.with(holder.itemView.context)
+//                            .load(url)
+//                            .apply(RequestOptions().circleCrop()).into(view.commentviewitem_imageview_profile)
+//                    }
+//
+//                }
+            var ref = FirebaseStorage.getInstance().reference.child(comments[position].uid.toString());
+            ref.downloadUrl.addOnCompleteListener {
+                    task ->
+//                Log.d("task", task.result.toString())
+                if(task.isSuccessful){
+                    Glide.with(holder.itemView.context)
+//              .applyDefaultRequestOptions(RequestOptions().centerCrop())
+                        //.load(contentDTOs[position].imageUrl)
+                        .load(task.result)
+                        .apply(RequestOptions().circleCrop())
+                        .into(view.commentviewitem_imageview_profile)
                 }
+            }
+
 
             view.commentviewitem_textview_profile.text = comments[position].userId
             view.commentviewitem_textview_comment.text = comments[position].comment
