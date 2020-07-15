@@ -130,13 +130,19 @@ class UserFragment : Fragment() {
 //            var imageView = (holder as GridFragment.GridFragmentRecyclerViewAdatper.CustomViewHolder).imageView
         profileref.downloadUrl.addOnCompleteListener {
                 task ->
-            if(task.isSuccessful){
-                Glide.with(activity)
-                    .load(task.result)
-                    .apply(RequestOptions().circleCrop())
-                    .into(fragmentView!!.account_iv_profile)
+            try {
+                if(task.isSuccessful){
+                    Glide.with(activity)
+                        .load(task.result)
+                        .apply(RequestOptions().circleCrop())
+                        .into(fragmentView!!.account_iv_profile)
 
+                }
             }
+            catch (e: NullPointerException){
+                throw e
+            }
+
         }
 
     }

@@ -100,6 +100,10 @@ class DetailViewFragment : Fragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
             val view = LayoutInflater.from(parent.context).inflate(R.layout.item_detail, parent, false)
+//            view.mainConstraintLayout.maxWidth = resources.displayMetrics.widthPixels
+//            view.mainConstraintLayout.minWidth = resources.displayMetrics.widthPixels
+            view.mainConstraintLayout.maxHeight = resources.displayMetrics.widthPixels - 60
+            view.mainConstraintLayout.maxWidth = resources.displayMetrics.widthPixels
             return CustomViewHolder(view)
 
         }
