@@ -52,7 +52,13 @@ class LoginActivity : AppCompatActivity() {
 
         google_SigninButton.setOnClickListener { googleLogin() }
         facebook_SigninButton.setOnClickListener { facebookLogin() }
-        email_SigninButton.setOnClickListener { signinAndSignupEmail() }
+        email_SigninButton.setOnClickListener { emainLogin() }
+
+        email_SignupText.setOnClickListener { moveSignUpPage() }
+    }
+    fun moveSignUpPage(){
+        startActivity(Intent(this, SignUpActivity()::class.java))
+        finish()
     }
 
     fun moveMainPage(user: FirebaseUser?){
@@ -105,25 +111,12 @@ class LoginActivity : AppCompatActivity() {
         if(email_editText.text.toString().isNullOrEmpty() || password_editText.text.toString().isNullOrEmpty()){
             Toast.makeText(this, "아이디 혹은 패스워드를 입력해주세요.", Toast.LENGTH_SHORT).show()
         } else{
-            signinAndSignupEmail()
+            signinEmail()
         }
     }
 
 
-    fun signinAndSignupEmail(){
-        auth?.createUserWithEmailAndPassword(email_editText.text.toString(),password_editText.text.toString())
-            ?.addOnCompleteListener {
-                task ->
-                if(task.isSuccessful){
-                    Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
-                    moveMainPage(task.result?.user)
-                } else if(task.exception?.message.isNullOrEmpty()){
-                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
-                } else{
-                    signinEmail()
-                }
-            }
-    }
+
 
     fun signinEmail() {
         auth?.signInWithEmailAndPassword(email_editText.text.toString(), password_editText.text.toString())
@@ -133,7 +126,8 @@ class LoginActivity : AppCompatActivity() {
                             Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
                             moveMainPage(task.result?.user)
                         } else {
-                            Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
+                            //Toast.makeText(this, task.exception?.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "존재하지 않는 계정입니다.", Toast.LENGTH_SHORT).show()
                         }
             }
     }
