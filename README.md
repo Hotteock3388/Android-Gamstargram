@@ -34,7 +34,7 @@
 
 
 <img src="https://user-images.githubusercontent.com/57486593/121770093-45231680-cba2-11eb-8da0-b385488abf66.png" width="220" ><img src="https://user-images.githubusercontent.com/57486593/121770072-2f155600-cba2-11eb-8aa4-16b9f37875f1.png" width="220" ><img src="https://user-images.githubusercontent.com/57486593/121770077-3472a080-cba2-11eb-834a-63cce5f4e20d.png" width="220" >
-<br><br> 사진 모아보기, 알림 페이지, 마이 페이지 입니다.
+<br><br> 사진 모아보기, 알림 페이지, 마이 페이지 입니다. <br><br>
 
 
 
